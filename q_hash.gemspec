@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/q_hash/version"
+require_relative "lib/q_hash"
 
 Gem::Specification.new do |spec|
   spec.name          = "q_hash"

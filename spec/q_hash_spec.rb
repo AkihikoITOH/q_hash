@@ -39,10 +39,12 @@ RSpec.describe QHash do
 
   let(:instance) { described_class.new(data) }
 
-  describe "#find_by_attribute" do
+  describe "#find" do
+    subject { instance.find(**conditions) }
+
     context "when the attribute exists" do
       context "when matching record exists" do
-        subject { instance.find_by_id(data.first[:id]) }
+        let(:conditions) { {id: data.first[:id]} }
 
         it "finds by the attribute" do
           expect(subject).to eq data.first
@@ -50,58 +52,101 @@ RSpec.describe QHash do
       end
 
       context "when matching record does not exist" do
-        subject { instance.find_by_id("abc") }
+        let(:conditions) { {id: "abc"} }
 
         it { is_expected.to be_nil }
       end
     end
 
     context "when the attribute does not exist" do
-      subject { instance.find_by_name("John Doe") }
+      let(:conditions) { {name: "John Doe"} }
 
-      it { is_expected.to raise_error(NoMethodError) }
+      it { is_expected.to be_nil }
     end
   end
 
-  describe "single #where with top-level attribute" do
-    subject { instance.where(id: data.last[:id]) }
+  describe "#find!" do
+    subject { instance.find!(**conditions) }
 
-    it "returns an array with the correct record" do
-      expect(subject).to eq [data.last]
+    context "when the attribute exists" do
+      context "when matching record exists" do
+        let(:conditions) { {id: data.first[:id]} }
+
+        it "finds by the attribute" do
+          expect(subject).to eq data.first
+        end
+      end
+
+      context "when matching record does not exist" do
+        let(:conditions) { {id: "abc"} }
+
+        it { expect { subject }.to raise_error QHash::RecordNotFound }
+      end
+    end
+
+    context "when the attribute does not exist" do
+      let(:conditions) { {name: "John Doe"} }
+
+      it { expect { subject }.to raise_error QHash::RecordNotFound }
     end
   end
 
-  describe "single #where with nested attribute" do
-    subject { instance.where(address: {country: "Japan"}) }
+  describe "#where" do
+    describe "single #where" do
+      subject { instance.where(**conditions) }
 
-    it "returns an array with the correct records" do
-      expect(subject).to eq data
+      describe "single #where with top-level attribute" do
+        let(:conditions) { {id: data.last[:id]} }
+
+        it "returns an array with the correct record" do
+          expect(subject).to contain_exactly(data.last)
+        end
+      end
+
+      describe "single #where with nested attribute" do
+        let(:conditions) { {address: {country: "Japan"}} }
+
+        it "returns an array with the correct records" do
+          expect(subject).to contain_exactly(*data)
+        end
+      end
+
+      describe "single #where with multiple nested attributes" do
+        let(:conditions) do
+          {
+            address: {country: "Japan"},
+            personal_info: {name: data.dig(0, :personal_info, :name)}
+          }
+        end
+
+        it "returns an array with the correct record" do
+          expect(subject).to contain_exactly(data.first)
+        end
+      end
+    end
+
+    describe "chained #where" do
+      subject do
+        instance
+          .where(address: {country: "Japan"})
+          .where(personal_info: {name: data.dig(0, :personal_info, :name)})
+      end
+
+      it "returns an array with the correct record" do
+        expect(subject).to contain_exactly(data.first)
+      end
     end
   end
 
-  describe "single #where with multiple nested attributes" do
+  describe "chaining #where and #find" do
     subject do
       instance
-        .where(
-          address: {country: "Japan"},
-          personal_info: {name: data.dig(0, :personal_info, :name)}
-        )
+        .where(address: {country: "Japan", city: ["Tokyo", "Osaka"]})
+        .find(id: data.last[:id])
     end
 
-    it "returns an array with the correct record" do
-      expect(subject).to eq [data.first]
-    end
-  end
-
-  describe "chained #where" do
-    subject do
-      instance
-        .where(address: {country: "Japan"})
-        .where(personal_info: {name: data.dig(0, :personal_info, :name)})
-    end
-
-    it "returns an array with the correct record" do
-      expect(subject).to eq [data.first]
+    it "returns the correct record" do
+      expect(subject).to eq data.last
     end
   end
 end
