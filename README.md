@@ -6,6 +6,32 @@
 
 QHash lets you query array of hashes with ActiveRecord-like interface.
 
+## What's the point?
+
+We often do something like
+
+```ruby
+users.select do |user|
+  (dob = user.dig(:personal_data, :date_of_birth)) &&
+    dob > Date.new(1990, 1, 1) &&
+    user.dig(:address, :country) == "Germany" &&
+    user.dig(:address, :city) == "Hamburg"
+end
+```
+
+which can quickly become hard to read.
+
+QHash provides syntax sugar that would allow you to do
+
+```ruby
+users.where(
+  personal_data: {
+    date_of_birth: ->(dob) { dob > Date.new(1990, 1, 1) }
+  },
+  address: {country: "Germany", city: "Hamburg"}
+)
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
