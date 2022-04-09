@@ -9,18 +9,18 @@ class QHash
 
   include Enumerable
 
-  def initialize(original_data)
-    @original_data = original_data
+  def initialize(data)
+    @data = data
   end
 
-  def find(conditions)
-    original_data.find do |hash|
+  def find_by(conditions)
+    data.find do |hash|
       conditions.all? { |key, value| query(hash, key, value) }
     end
   end
 
-  def find!(conditions)
-    find(conditions) || raise(RecordNotFound)
+  def find_by!(conditions)
+    find_by(conditions) || raise(RecordNotFound)
   end
 
   def where(conditions)
@@ -28,13 +28,17 @@ class QHash
   end
 
   def each(&block)
-    original_data.each(&block)
+    data.each(&block)
+  end
+
+  def inspect
+    data
   end
 
   private
 
   def filter_by_conditions(conditions)
-    original_data.select do |hash|
+    data.select do |hash|
       conditions.all? { |key, value| query(hash, key, value) }
     end
   end
@@ -58,5 +62,5 @@ class QHash
     @top_level_keys ||= array_of_hashes.flat_map(&:keys).uniq
   end
 
-  attr_reader :original_data, :filtered_data
+  attr_reader :data, :filtered_data
 end

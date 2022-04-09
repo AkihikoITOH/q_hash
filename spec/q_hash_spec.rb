@@ -39,8 +39,8 @@ RSpec.describe QHash do
 
   let(:instance) { described_class.new(data) }
 
-  describe "#find" do
-    subject { instance.find(**conditions) }
+  describe "#find_by" do
+    subject { instance.find_by(**conditions) }
 
     context "when the attribute exists" do
       context "when matching record exists" do
@@ -73,8 +73,8 @@ RSpec.describe QHash do
     end
   end
 
-  describe "#find!" do
-    subject { instance.find!(**conditions) }
+  describe "#find_by!" do
+    subject { instance.find_by!(**conditions) }
 
     context "when the attribute exists" do
       context "when matching record exists" do
@@ -162,12 +162,12 @@ RSpec.describe QHash do
     end
   end
 
-  describe "chaining #where and #find" do
+  describe "chaining #where and #find_by" do
     subject do
       instance
         .where(address: {country: "Japan", city: ["Tokyo", "Osaka"]})
         .where(biometrics: {height: ->(height) { height > 100 }})
-        .find(id: data.last[:id])
+        .find_by(id: data.last[:id])
     end
 
     it "returns the correct record" do

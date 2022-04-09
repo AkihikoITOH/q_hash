@@ -1,8 +1,6 @@
-# QHash
+# QHash - [ActiveRecord](https://github.com/rails/rails/tree/main/activerecord) style query interface for Hash
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/q_hash`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+QHash lets you query array of hashes with ActiveRecord-like interface.
 
 ## Installation
 
@@ -22,7 +20,92 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Let's say you have the following array of hash:
+```ruby
+data = [
+  {
+    id: "da9d517e-eb1b-4f5b-8fec-c1258eda0db2",
+    personal_info: {
+      name: "John Doe",
+      date_of_birth: "1900-01-01"
+    },
+    address: {
+      country: "Japan",
+      city: "Tokyo"
+    },
+    hobbies: [
+      "jogging",
+      "eating",
+      "sleeping"
+    ]
+  },
+  {
+    id: "fab15d98-47d6-4552-a6e6-0b83de0b532b",
+    personal_info: {
+      name: "John Doe Jr.",
+      date_of_birth: "2000-01-01"
+    },
+    address: {
+      country: "Japan",
+      city: "Tokyo"
+    },
+    biometrics: {
+      height: 200,
+      weight: 100
+    }
+  }
+]
+```
+
+#### `QHash#find_by`
+
+```ruby
+QHash.new(data).find_by(id: "fab15d98-47d6-4552-a6e6-0b83de0b532b")
+# =>
+#   {:id=>"fab15d98-47d6-4552-a6e6-0b83de0b532b",
+#     :personal_info=>{:name=>"John Doe Jr.", :date_of_birth=>"2000-01-01"},
+#     :address=>{:country=>"Japan", :city=>"Tokyo"},
+#     :biometrics=>{:height=>200, :weight=>100}}
+
+```
+
+Note that `#find_by` returns the first record that matches the condition, just like `Array#find_by`.
+
+There's also `QHash#find_by!`, which raises `QHash::RecordNotFound` in case there's no record to be found.
+
+#### `QHash#where`
+
+```ruby
+QHash.new(data).where(personal_info: { name: 'John Doe' })
+# => [{:id=>"da9d517e-eb1b-4f5b-8fec-c1258eda0db2", :personal_info=>{:name=>"John Doe", :date_of_birth=>"1900-01-01"}, :address=>{:country=>"Japan", :city=>"Tokyo"}, :hobbies=>["jogging", "eating", "sleeping"]}]
+```
+
+Note that `#where` returns an instance of `QHash`, not an array of hashes.
+But no worries, `QHash` is also an [`Enumerable`](https://ruby-doc.org/core-3.1.1/Enumerable.html).
+
+#### Proc condition
+If you'd like to query by more complex conditions, you can also use `Proc`s
+
+```ruby
+QHash.new(data).where(biometrics: {height: ->(height) { height > 100 }})
+# => [{:id=>"fab15d98-47d6-4552-a6e6-0b83de0b532b", :personal_info=>{:name=>"John Doe Jr.", :date_of_birth=>"2000-01-01"}, :address=>{:country=>"Japan", :city=>"Tokyo"}, :biometrics=>{:height=>200, :weight=>100}}]
+```
+
+#### Chaining `#where` and `#find_by`
+You can also chain `#where` and `#find_by`:
+
+```ruby
+QHash.new(data)
+      .where(address: {country: "Japan", city: ["Tokyo", "Osaka"]})
+      .where(biometrics: {height: ->(height) { height > 100 }})
+      .find_by(id: data.last[:id])
+# =>
+#   {:id=>"fab15d98-47d6-4552-a6e6-0b83de0b532b",
+#     :personal_info=>{:name=>"John Doe Jr.", :date_of_birth=>"2000-01-01"},
+#     :address=>{:country=>"Japan", :city=>"Tokyo"},
+#     :biometrics=>{:height=>200, :weight=>100}}
+```
+
 
 ## Development
 
@@ -32,7 +115,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/q_hash. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/q_hash/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/AkihikoITOH/q_hash. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/q_hash/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +123,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the QHash project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/q_hash/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the QHash project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/AkihikoITOH/q_hash/blob/master/CODE_OF_CONDUCT.md).
