@@ -1,6 +1,7 @@
 # QHash - [ActiveRecord](https://github.com/rails/rails/tree/main/activerecord) style query interface for Hash
 
 [![Ruby](https://github.com/AkihikoITOH/q_hash/actions/workflows/main.yml/badge.svg)](https://github.com/AkihikoITOH/q_hash/actions/workflows/main.yml)
+[![Gem Version](https://badge.fury.io/rb/q_hash.svg)](https://badge.fury.io/rb/q_hash)
 [![Maintainability](https://api.codeclimate.com/v1/badges/21e195471cca64af0366/maintainability)](https://codeclimate.com/github/AkihikoITOH/q_hash/maintainability)
 
 QHash lets you query array of hashes with ActiveRecord-like interface.
