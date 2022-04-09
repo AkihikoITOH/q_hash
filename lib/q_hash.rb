@@ -40,9 +40,11 @@ class QHash
   end
 
   def query(record, key, value)
-    return false if value.nil?
+    return false if record[key].nil?
 
     case value
+    when Proc
+      value.call(record[key])
     when Hash
       value.all? { |nested_key, nested_value| query(record[key], nested_key, nested_value) }
     when Array

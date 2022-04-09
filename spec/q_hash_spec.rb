@@ -46,7 +46,7 @@ RSpec.describe QHash do
       context "when matching record exists" do
         let(:conditions) { {id: data.first[:id]} }
 
-        it "finds by the attribute" do
+        it "finds the correct record" do
           expect(subject).to eq data.first
         end
       end
@@ -55,6 +55,14 @@ RSpec.describe QHash do
         let(:conditions) { {id: "abc"} }
 
         it { is_expected.to be_nil }
+      end
+
+      context "with proc condition" do
+        let(:conditions) { {biometrics: ->(biometrics) { !biometrics.nil? }} }
+
+        it "finds the correct record" do
+          expect(subject).to eq data.last
+        end
       end
     end
 
@@ -72,7 +80,7 @@ RSpec.describe QHash do
       context "when matching record exists" do
         let(:conditions) { {id: data.first[:id]} }
 
-        it "finds by the attribute" do
+        it "finds the correct record" do
           expect(subject).to eq data.first
         end
       end
@@ -81,6 +89,14 @@ RSpec.describe QHash do
         let(:conditions) { {id: "abc"} }
 
         it { expect { subject }.to raise_error QHash::RecordNotFound }
+      end
+
+      context "with proc condition" do
+        let(:conditions) { {biometrics: ->(biometrics) { !biometrics.nil? }} }
+
+        it "finds the correct record" do
+          expect(subject).to eq data.last
+        end
       end
     end
 
@@ -100,6 +116,14 @@ RSpec.describe QHash do
 
         it "returns an array with the correct record" do
           expect(subject).to contain_exactly(data.last)
+        end
+      end
+
+      describe "single #where with proc condition" do
+        let(:conditions) { {id: ->(id) { id.is_a?(String) }} }
+
+        it "returns an array with the correct records" do
+          expect(subject).to contain_exactly(*data)
         end
       end
 
@@ -142,6 +166,7 @@ RSpec.describe QHash do
     subject do
       instance
         .where(address: {country: "Japan", city: ["Tokyo", "Osaka"]})
+        .where(biometrics: {height: ->(height) { height > 100 }})
         .find(id: data.last[:id])
     end
 
