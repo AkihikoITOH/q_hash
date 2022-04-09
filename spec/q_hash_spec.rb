@@ -117,6 +117,16 @@ RSpec.describe QHash do
         it "returns an array with the correct record" do
           expect(subject).to contain_exactly(data.last)
         end
+        it { is_expected.to be_a(QHash) }
+
+        context "when there is no match" do
+          let(:conditions) { {id: "abc"} }
+
+          it "returns an empty array" do
+            expect(subject).to match []
+          end
+          it { is_expected.to be_a(QHash) }
+        end
       end
 
       describe "single #where with proc condition" do
@@ -125,6 +135,7 @@ RSpec.describe QHash do
         it "returns an array with the correct records" do
           expect(subject).to contain_exactly(*data)
         end
+        it { is_expected.to be_a(QHash) }
       end
 
       describe "single #where with nested attribute" do
@@ -133,6 +144,7 @@ RSpec.describe QHash do
         it "returns an array with the correct records" do
           expect(subject).to contain_exactly(*data)
         end
+        it { is_expected.to be_a(QHash) }
       end
 
       describe "single #where with multiple nested attributes" do
@@ -146,6 +158,7 @@ RSpec.describe QHash do
         it "returns an array with the correct record" do
           expect(subject).to contain_exactly(data.first)
         end
+        it { is_expected.to be_a(QHash) }
       end
     end
 

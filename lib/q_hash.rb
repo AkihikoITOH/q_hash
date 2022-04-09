@@ -37,6 +37,8 @@ class QHash
 
   private
 
+  attr_reader :data
+
   def filter_by_conditions(conditions)
     data.select do |hash|
       conditions.all? { |key, value| query(hash, key, value) }
@@ -57,10 +59,4 @@ class QHash
       record[key] == value
     end
   end
-
-  def top_level_keys
-    @top_level_keys ||= array_of_hashes.flat_map(&:keys).uniq
-  end
-
-  attr_reader :data, :filtered_data
 end
