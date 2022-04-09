@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class QHash
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 
   class Error < StandardError; end
 

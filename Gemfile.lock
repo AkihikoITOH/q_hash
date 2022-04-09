@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    q_hash (0.1.0)
+    q_hash (0.1.2)
 
 GEM
   remote: https://rubygems.org/
