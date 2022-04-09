@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = "QHash lets you query array of hashes with ActiveRecord-like interface"
   spec.homepage      = "https://github.com/AkihikoITOH/q_hash"
   spec.license       = "MIT"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 2.4.0"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
