@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+GEM_VERSION = $(ruby -e '$LOAD_PATH << File.join(File.dirname(__FILE__), "lib"); require "q_hash"; print QHash::VERSION')
+
+gem build q_hash.gemspec
+
+if [ ! -d "pkg" ]; then
+  mkdir pkg
+fi
+
+mv q_hash-$GEM_VERSION.gem pkg/q_hash-$GEM_VERSION.gem
+
+git tag -m "Release $GEM_VERSION" -a v$GEM_VERSION HEAD
+git push origin --tags
+
+gem push pkg/q_hash-$GEM_VERSION.gem
