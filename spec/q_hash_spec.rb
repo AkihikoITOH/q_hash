@@ -17,7 +17,8 @@ RSpec.describe QHash do
           "jogging",
           "eating",
           "sleeping"
-        ]
+        ],
+        job: nil
       },
       {
         id: "fab15d98-47d6-4552-a6e6-0b83de0b532b",
@@ -32,7 +33,8 @@ RSpec.describe QHash do
         biometrics: {
           height: 200,
           weight: 100
-        }
+        },
+        job: "Software Developer"
       }
     ]
   end
@@ -62,6 +64,14 @@ RSpec.describe QHash do
 
         it "finds the correct record" do
           expect(subject).to eq data.last
+        end
+      end
+
+      context "with nil condition" do
+        let(:conditions) { {job: nil} }
+
+        it "finds the correct record" do
+          expect(subject).to eq data.first
         end
       end
     end
@@ -96,6 +106,14 @@ RSpec.describe QHash do
 
         it "finds the correct record" do
           expect(subject).to eq data.last
+        end
+      end
+
+      context "with nil condition" do
+        let(:conditions) { {job: nil} }
+
+        it "finds the correct record" do
+          expect(subject).to eq data.first
         end
       end
     end

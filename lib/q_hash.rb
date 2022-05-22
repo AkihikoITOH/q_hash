@@ -13,18 +13,17 @@ class QHash
     @data = data
   end
 
-  def find_by(conditions)
-    data.find do |hash|
-      conditions.all? { |key, value| query(hash, key, value) }
-    end
+  def find_by(**conditions)
+    data.find { |record| apply_conditions(record, conditions) }
   end
 
-  def find_by!(conditions)
-    find_by(conditions) || raise(RecordNotFound)
+  def find_by!(**conditions)
+    find_by(**conditions) || raise(RecordNotFound)
   end
 
-  def where(conditions)
-    self.class.new(filter_by_conditions(conditions))
+  def where(**conditions)
+    result = data.select { |record| apply_conditions(record, conditions) }
+    self.class.new(result)
   end
 
   def each(&block)
@@ -39,24 +38,22 @@ class QHash
 
   attr_reader :data
 
-  def filter_by_conditions(conditions)
-    data.select do |hash|
-      conditions.all? { |key, value| query(hash, key, value) }
-    end
+  def apply_conditions(record, conditions)
+    conditions.all? { |query_key, query_value| query(record, query_key, query_value) }
   end
 
   def query(record, key, value)
-    return false if record[key].nil?
+    return false unless record.key?(key)
 
     case value
     when Proc
       value.call(record[key])
     when Hash
-      value.all? { |nested_key, nested_value| query(record[key], nested_key, nested_value) }
+      value.all? { |nested_query_key, nested_query_value| query(record[key], nested_query_key, nested_query_value) }
     when Array
       value.include?(record[key])
     else
-      record[key] == value
+      value == record[key]
     end
   end
 end
