@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-GEM_VERSION = $(ruby -e '$LOAD_PATH << File.join(File.dirname(__FILE__), "lib"); require "q_hash"; print QHash::VERSION')
+GEM_VERSION=$(ruby -e '$LOAD_PATH << File.join(File.dirname(__FILE__), "lib"); require "q_hash"; print QHash::VERSION')
 
 gem build q_hash.gemspec
 
