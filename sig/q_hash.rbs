@@ -6,8 +6,8 @@ class QHash
   RecordNotFound: StandardError
 
   def initialize: (Array[Hash[Symbol, untyped]]) -> void
-  def find_by: (**Hash[Symbol, untyped]) -> Hash[Symbol, untyped]?
-  def find_by!: (**Hash[Symbol, untyped]) -> Hash[Symbol, untyped]?
+  def find_by: (**Hash[Symbol, untyped]) -> (Hash[Symbol, untyped] | nil)
+  def find_by!: (**Hash[Symbol, untyped]) -> (Hash[Symbol, untyped] | nil)?
   def where: (**Hash[Symbol, untyped]) -> QHash
   def each: () { (Hash[Symbol, untyped]) -> void } -> void
   def inspect: () -> Array[Hash[Symbol, untyped]]
