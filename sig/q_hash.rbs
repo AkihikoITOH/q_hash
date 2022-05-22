@@ -1,0 +1,18 @@
+# See the writing guide of rbs: https://github.com/ruby/rbs#guides
+class QHash
+  VERSION: String
+
+  Error: StandardError
+  RecordNotFound: StandardError
+
+  def initialize: (Array[Hash[Symbol, untyped]]) -> void
+  def find_by: (**Hash[Symbol, untyped]) -> Hash[Symbol, untyped]?
+  def find_by!: (**Hash[Symbol, untyped]) -> Hash[Symbol, untyped]?
+  def where: (**Hash[Symbol, untyped]) -> QHash
+  def each: () { (Hash[Symbol, untyped]) -> void } -> void
+  def inspect: () -> Array[Hash[Symbol, untyped]]
+
+  private attr_reader data: Array[Hash[Symbol, untyped]]
+  private def apply_conditions: (Hash[Symbol, untyped], Hash[Symbol, untyped]) -> bool
+  private def query: (Hash[Symbol, untyped], Symbol, untyped) -> bool
+end
