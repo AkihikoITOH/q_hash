@@ -74,7 +74,7 @@ GEM
     standard (1.14.0)
       rubocop (= 1.32.0)
       rubocop-performance (= 1.14.3)
-    steep (1.0.2)
+    steep (1.1.0)
       activesupport (>= 5.1)
       language_server-protocol (>= 3.15, < 4.0)
       listen (~> 3.0)
