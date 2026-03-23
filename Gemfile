@@ -5,7 +5,7 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in q_hash.gemspec
 gemspec
 
-gem "activesupport", "< 7.0"
+gem "activesupport", "<= 8.1.2.1"
 
 gem "rake", "~> 13.0"
 
